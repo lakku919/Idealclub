@@ -1,0 +1,15 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db { provider = "sqlite" url = env("DATABASE_URL") }
+
+model User { id Int @id @default(autoincrement()) email String @unique password String name String? role String @default("user") // "user" or "admin" balance Int @default(0) // stored in cents createdAt DateTime @default(now()) tickets Ticket[] withdrawals WithdrawalRequest[] transactions Transaction[] }
+
+model Transaction { id Int @id @default(autoincrement()) user User @relation(fields: [userId], references: [id]) userId Int type String // deposit, bet, win, refund, withdrawal, admin_adjust amount Int // cents (positive = credit to user, negative = debit) meta String? // free-form JSON/string createdAt DateTime @default(now()) }
+
+model WithdrawalRequest { id Int @id @default(autoincrement()) user User @relation(fields: [userId], references: [id]) userId Int amount Int // cents status String @default("pending") // pending, approved, rejected, paid reason String? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+
+model LotteryRound { id Int @id @default(autoincrement()) name String ticketPrice Int // cents maxTickets Int startedAt DateTime? endedAt DateTime? drawnAt DateTime? winnerTicketId Int? tickets Ticket[] createdAt DateTime @default(now()) }
+
+model Ticket { id Int @id @default(autoincrement()) round LotteryRound @relation(fields: [roundId], references: [id]) roundId Int user User @relation(fields: [userId], references: [id]) userId Int createdAt DateTime @default(now()) }
+
+model AuditLog { id Int @id @default(autoincrement()) actor String? action String detail String? createdAt DateTime @default(now()) }

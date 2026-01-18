@@ -1,4 +1,0 @@
-import prisma from '../../../lib/prisma'; import bcrypt from 'bcryptjs'; import { withSessionRoute } from '../../../lib/session';
-
-async function handler(req, res) { if (req.method !== 'POST') return res.status(405).end(); const { email, password, name } = req.body; if (!email || !password) return res.status(400).json({ error: 'Missing' }); const existing = await prisma.user.findUnique({ where: { email }}); if (existing) return res.status(400).json({ error: 'Email exists' }); const hash = await bcrypt.hash(password, 10); const user = await prisma.user.create({ data: { email, password: hash, name, balance: 0 } }); req.session.user = { id: user.id, email: user.email, role: user.role }; await req.session.save(); res.json({ ok: true, user: { id: user.id, email: user.email, name: user.name }}); }
-

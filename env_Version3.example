@@ -1,0 +1,15 @@
+# Copy to .env in local development. Do NOT commit real secrets.
+
+# Database (SQLite for demo). For production use Postgres and update DATABASE_URL accordingly.
+DATABASE_URL="file:./dev.db"
+
+# Session secret for next-iron-session (use a long random value)
+SESSION_PASSWORD="change_this_to_a_long_random_string"
+
+# Stripe keys (TEST MODE)
+STRIPE_SECRET_KEY="sk_test_xxx"
+STRIPE_PUBLISHABLE_KEY="pk_test_xxx"
+STRIPE_WEBHOOK_SECRET="whsec_xxx"
+
+# App URL (set to your live URL after deploying)
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
